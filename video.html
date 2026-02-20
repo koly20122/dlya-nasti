@@ -94,7 +94,7 @@
     <div class="container video-page">
         <div class="video-wrapper">
             <!-- Видео (лежит в корне) -->
-            <video id="myVideo" controls playsinline webkit-playsinline>
+            <video id="myVideo" playsinline webkit-playsinline>
                 <source src="video.mp4" type="video/mp4">
                 Твой браузер не поддерживает видео.
             </video>
@@ -123,42 +123,44 @@
         const downloadContainer = document.getElementById('downloadBtnContainer');
         const successMessage = document.getElementById('successMessage');
         
-        // Видео лежит в корне
         const videoFileName = 'video.mp4';
 
-        // Кнопка Play — запускает видео и открывает на весь экран
-        playBtn.addEventListener('click', () => {
-            // Запускаем видео
-            video.play();
-            
-            // Открываем на весь экран
-            if (video.requestFullscreen) {
-                video.requestFullscreen();
-            } else if (video.webkitRequestFullscreen) { // для Safari
-                video.webkitRequestFullscreen();
-            } else if (video.mozRequestFullScreen) { // для Firefox
-                video.mozRequestFullScreen();
-            } else if (video.msRequestFullscreen) { // для IE
-                video.msRequestFullscreen();
+        // Функция для открытия полноэкранного режима (кросс-браузерная)
+        function openFullscreen(element) {
+            if (element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.mozRequestFullScreen) { // Firefox
+                element.mozRequestFullScreen();
+            } else if (element.webkitRequestFullscreen) { // Chrome, Safari, Opera
+                element.webkitRequestFullscreen();
+            } else if (element.msRequestFullscreen) { // IE/Edge
+                element.msRequestFullscreen();
+            } else {
+                // Если полноэкранный режим не поддерживается — хотя бы просто запускаем видео
+                console.log('Fullscreen API not supported');
             }
+        }
+
+        // Кнопка Play
+        playBtn.addEventListener('click', () => {
+            // Сначала запускаем видео
+            video.play().then(() => {
+                // А потом открываем на весь экран
+                openFullscreen(video);
+            }).catch(error => {
+                console.log('Автовоспроизведение заблокировано:', error);
+                // Если автовоспроизведение заблокировано — просто открываем fullscreen
+                openFullscreen(video);
+            });
             
             // Прячем кнопку play
             playBtn.style.display = 'none';
-            
-            // Показываем кнопку скачивания после окончания видео
-            video.addEventListener('ended', showDownloadButton);
-            
-            // Если вышли из полноэкранного режима, но видео ещё не закончилось
-            video.addEventListener('pause', function onPause() {
-                if (!video.paused) return;
-                if (document.fullscreenElement) return;
-                // Если видео на паузе и не на весь экран — ничего не делаем
-            });
         });
 
-        function showDownloadButton() {
+        // Отслеживаем окончание видео
+        video.addEventListener('ended', () => {
             downloadContainer.style.display = 'block';
-        }
+        });
 
         // Скачивание видео
         document.getElementById('downloadBtn').addEventListener('click', function() {
@@ -182,9 +184,11 @@
             }
         });
 
-        // Если видео закончилось само
-        video.addEventListener('ended', () => {
-            showDownloadButton();
+        // Если видео уже закончилось по какой-то причине
+        video.addEventListener('pause', function() {
+            if (video.ended) {
+                downloadContainer.style.display = 'block';
+            }
         });
     </script>
 </body>
