@@ -68,11 +68,6 @@
             min-width: 180px;
         }
 
-        .btn:hover {
-            transform: translateY(2px);
-            box-shadow: 0 3px 0 #d48b9b, 0 8px 20px rgba(255, 150, 180, 0.4);
-        }
-
         .btn:active {
             transform: translateY(5px);
             box-shadow: 0 0px 0 #d48b9b, 0 8px 20px rgba(255, 150, 180, 0.4);
@@ -98,7 +93,7 @@
 <body>
     <div class="container video-page">
         <div class="video-wrapper">
-            <!-- Видео -->
+            <!-- Видео (лежит в корне) -->
             <video id="myVideo" controls playsinline webkit-playsinline>
                 <source src="video.mp4" type="video/mp4">
                 Твой браузер не поддерживает видео.
@@ -116,8 +111,8 @@
 
             <!-- Сообщение об успехе -->
             <div id="successMessage" class="success-message" style="display: none;">
-                ✅ Видео сохраняется в папку "Загрузки"<br>
-                📱 На iPhone: открой и нажми "Сохранить в фото"
+                ✅ Скачивание началось...<br>
+                📱 После загрузки открой файл и сохрани в фото
             </div>
         </div>
     </div>
@@ -127,22 +122,37 @@
         const playBtn = document.getElementById('playBtn');
         const downloadContainer = document.getElementById('downloadBtnContainer');
         const successMessage = document.getElementById('successMessage');
-        const videoUrl = 'video.mp4';
+        
+        // Видео лежит в корне
+        const videoFileName = 'video.mp4';
 
-        // Кнопка Play
+        // Кнопка Play — запускает видео и открывает на весь экран
         playBtn.addEventListener('click', () => {
+            // Запускаем видео
             video.play();
+            
+            // Открываем на весь экран
             if (video.requestFullscreen) {
                 video.requestFullscreen();
+            } else if (video.webkitRequestFullscreen) { // для Safari
+                video.webkitRequestFullscreen();
+            } else if (video.mozRequestFullScreen) { // для Firefox
+                video.mozRequestFullScreen();
+            } else if (video.msRequestFullscreen) { // для IE
+                video.msRequestFullscreen();
             }
+            
+            // Прячем кнопку play
             playBtn.style.display = 'none';
             
+            // Показываем кнопку скачивания после окончания видео
             video.addEventListener('ended', showDownloadButton);
+            
+            // Если вышли из полноэкранного режима, но видео ещё не закончилось
             video.addEventListener('pause', function onPause() {
                 if (!video.paused) return;
                 if (document.fullscreenElement) return;
-                showDownloadButton();
-                video.removeEventListener('pause', onPause);
+                // Если видео на паузе и не на весь экран — ничего не делаем
             });
         });
 
@@ -150,30 +160,32 @@
             downloadContainer.style.display = 'block';
         }
 
-        // УНИВЕРСАЛЬНОЕ СОХРАНЕНИЕ - работает везде
+        // Скачивание видео
         document.getElementById('downloadBtn').addEventListener('click', function() {
-            // Создаем ссылку для скачивания
             const link = document.createElement('a');
-            link.href = videoUrl;
-            link.download = 'dlya_nasti.mp4'; // имя файла при скачивании
+            link.href = videoFileName;
+            link.download = 'dlya_nasti.mp4';
+            link.target = '_blank';
+            
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             
-            // Показываем подсказку
             successMessage.style.display = 'block';
             
-            // Дополнительная инструкция для iPhone
             if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
                 successMessage.innerHTML = `
                     ✅ Видео загружается...<br>
-                    📱 После загрузки открой файл и нажми<br>
-                    <strong>"Сохранить видео"</strong> в фотоплёнку
+                    📱 Открой папку "Загрузки" и нажми<br>
+                    <strong>"Сохранить видео"</strong>
                 `;
             }
+        });
+
+        // Если видео закончилось само
+        video.addEventListener('ended', () => {
+            showDownloadButton();
         });
     </script>
 </body>
 </html>
-
-
