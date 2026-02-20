@@ -6,7 +6,6 @@
     <title>Для Насти 💐</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Дополнительные стили для кнопки и видео */
         .video-page {
             min-height: 100vh;
             display: flex;
@@ -27,7 +26,7 @@
             max-width: 400px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 15px;
             border: 2px solid rgba(255, 200, 220, 0.5);
         }
 
@@ -84,25 +83,15 @@
             text-align: center;
         }
 
-        /* Подсказка для сохранения */
-        .hint-box {
-            background: rgba(255, 220, 230, 0.5);
+        .success-message {
+            background: #d4edda;
+            color: #155724;
             border-radius: 20px;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px dashed #ff8da1;
-            font-size: 0.9rem;
-            color: #a5556b;
+            padding: 15px;
+            margin-top: 10px;
             text-align: center;
-        }
-
-        .hint-box p {
-            margin: 5px 0;
-        }
-
-        .hint-box .arrow {
-            font-size: 1.5rem;
-            color: #ff6b8b;
+            border: 1px solid #c3e6cb;
+            font-size: 1rem;
         }
     </style>
 </head>
@@ -111,27 +100,24 @@
         <div class="video-wrapper">
             <!-- Видео -->
             <video id="myVideo" controls playsinline webkit-playsinline>
-                <source src="video.mp4" type="video/mp4">
+                <source src="video/video.mp4" type="video/mp4">
                 Твой браузер не поддерживает видео.
             </video>
             
             <!-- Кнопка Play -->
             <div style="text-align: center;">
-                <button class="btn" id="playBtn">▶ Включи меня</button>
+                <button class="btn" id="playBtn">▶ play my</button>
             </div>
             
             <!-- Кнопка "Запомнить момент" (появляется после видео) -->
             <div id="downloadBtnContainer" style="display: none; text-align: center;">
-                <button class="btn secondary" id="downloadBtn">💾 Сохранить момент</button>
+                <button class="btn secondary" id="downloadBtn">💾 Скачать видео</button>
             </div>
 
-            <!-- Подсказка (появляется после нажатия на кнопку) -->
-            <div id="hintBox" class="hint-box" style="display: none;">
-                <p class="arrow">👇</p>
-                <p><strong>Как сохранить видео:</strong></p>
-                <p>1️⃣ Нажми и удерживай палец на видео</p>
-                <p>2️⃣ Выбери <strong>"Сохранить видео"</strong></p>
-                <p>3️⃣ Готово! Видео будет в фотоплёнке 📸</p>
+            <!-- Сообщение об успехе -->
+            <div id="successMessage" class="success-message" style="display: none;">
+                ✅ Видео сохраняется в папку "Загрузки"<br>
+                📱 На iPhone: открой и нажми "Сохранить в фото"
             </div>
         </div>
     </div>
@@ -140,21 +126,18 @@
         const video = document.getElementById('myVideo');
         const playBtn = document.getElementById('playBtn');
         const downloadContainer = document.getElementById('downloadBtnContainer');
-        const hintBox = document.getElementById('hintBox');
+        const successMessage = document.getElementById('successMessage');
+        const videoUrl = 'video/video.mp4';
 
         // Кнопка Play
         playBtn.addEventListener('click', () => {
             video.play();
-            // Пытаемся открыть на весь экран
             if (video.requestFullscreen) {
                 video.requestFullscreen();
             }
             playBtn.style.display = 'none';
             
-            // Показываем кнопку сохранения после окончания видео
             video.addEventListener('ended', showDownloadButton);
-            
-            // И после выхода из полноэкранного режима
             video.addEventListener('pause', function onPause() {
                 if (!video.paused) return;
                 if (document.fullscreenElement) return;
@@ -163,39 +146,32 @@
             });
         });
 
-        // Показываем кнопку "Запомнить момент"
         function showDownloadButton() {
             downloadContainer.style.display = 'block';
         }
 
-        // Кнопка "Запомнить момент" — показывает подсказку
-        document.getElementById('downloadBtn').addEventListener('click', () => {
+        // УНИВЕРСАЛЬНОЕ СОХРАНЕНИЕ - работает везде
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            // Создаем ссылку для скачивания
+            const link = document.createElement('a');
+            link.href = videoUrl;
+            link.download = 'dlya_nasti.mp4'; // имя файла при скачивании
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
             // Показываем подсказку
-            hintBox.style.display = 'block';
+            successMessage.style.display = 'block';
             
-            // Плавно скроллим к подсказке
-            hintBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            
-            // Дополнительная информация для разных устройств
+            // Дополнительная инструкция для iPhone
             if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                // Для iPhone ничего не делаем, подсказка уже есть
-            } else {
-                // Для Android просто показываем другой текст
-                hintBox.innerHTML = `
-                    <p class="arrow">👇</p>
-                    <p><strong>Как сохранить видео:</strong></p>
-                    <p>1️⃣ Нажми на три точки в плеере</p>
-                    <p>2️⃣ Выбери "Скачать"</p>
-                    <p>или нажми и удерживай на видео</p>
+                successMessage.innerHTML = `
+                    ✅ Видео загружается...<br>
+                    📱 После загрузки открой файл и нажми<br>
+                    <strong>"Сохранить видео"</strong> в фотоплёнку
                 `;
             }
-        });
-
-        // Если видео уже закончилось, а кнопка не появилась
-        video.addEventListener('ended', () => {
-            showDownloadButton();
         });
     </script>
 </body>
 </html>
-
