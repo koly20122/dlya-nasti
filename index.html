@@ -2,52 +2,176 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Для Насти 💐</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .video-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            margin: 0;
+            background: linear-gradient(145deg, #fdeff2 0%, #f8e8ec 100%);
+        }
+
+        .video-wrapper {
+            background: rgba(255, 240, 245, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 15px;
+            box-shadow: 0 20px 40px rgba(255, 170, 190, 0.4);
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border: 2px solid rgba(255, 200, 220, 0.5);
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            height: auto;
+            max-height: 45vh;
+            min-height: 200px;
+            object-fit: contain;
+            border-radius: 20px;
+            background: #000;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .btn {
+            background: #ffb6c1;
+            border: none;
+            color: #5e3a44;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 16px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #d48b9b, 0 10px 25px rgba(255, 150, 180, 0.4);
+            transition: 0.1s ease;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            letter-spacing: 1px;
+            width: fit-content;
+            margin: 0 auto;
+            min-width: 200px;
+        }
+
+        .btn.secondary {
+            background: #ffe2e9;
+            box-shadow: 0 3px 0 #d4a2b0;
+            color: #754956;
+            font-size: 1rem;
+            padding: 12px 25px;
+            min-width: 180px;
+        }
+
+        .btn:hover {
+            transform: translateY(2px);
+            box-shadow: 0 3px 0 #d48b9b, 0 8px 20px rgba(255, 150, 180, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 0px 0 #d48b9b, 0 8px 20px rgba(255, 150, 180, 0.4);
+        }
+
+        #downloadBtnContainer {
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border-radius: 20px;
+            padding: 15px;
+            margin-top: 10px;
+            text-align: center;
+            border: 1px solid #c3e6cb;
+            font-size: 1rem;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Первое модальное окно -->
-        <div id="modal1" class="modal active">
-            <div class="modal-content">
-                <h2>🌷</h2>
-                <p>тут кое что для тебя</p>
-                <button class="btn" onclick="showPasswordModal()">Ок</button>
+    <div class="container video-page">
+        <div class="video-wrapper">
+            <!-- Видео -->
+            <video id="myVideo" controls playsinline webkit-playsinline>
+                <source src="video/video.mp4" type="video/mp4">
+                Твой браузер не поддерживает видео.
+            </video>
+            
+            <!-- Кнопка Play -->
+            <div style="text-align: center;">
+                <button class="btn" id="playBtn">▶ play my</button>
             </div>
-        </div>
+            
+            <!-- Кнопка "Запомнить момент" (появляется после видео) -->
+            <div id="downloadBtnContainer" style="display: none; text-align: center;">
+                <button class="btn secondary" id="downloadBtn">💾 Скачать видео</button>
+            </div>
 
-        <!-- Второе модальное окно (пароль) -->
-        <div id="modal2" class="modal">
-            <div class="modal-content">
-                <h2>💌</h2>
-                <p>введи пароль</p>
-                <p style="font-size: 0.9rem; color: #888; margin-top: -10px;">4 символа</p>
-                <div class="password-inputs">
-                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pass-input" id="pass1" onkeyup="moveToNext(this, 'pass2')">
-                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pass-input" id="pass2" onkeyup="moveToNext(this, 'pass3')">
-                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pass-input" id="pass3" onkeyup="moveToNext(this, 'pass4')">
-                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pass-input" id="pass4" onkeyup="checkPassword()">
-                </div>
-                
-                <!-- Здесь будет появляться подсказка -->
-                <div id="hint" style="margin-top: 20px; display: none;">
-                    <div style="background: rgba(255, 200, 220, 0.3); border-radius: 30px; padding: 15px; border: 2px dashed #ffb6c1;">
-                        <p style="font-size: 1.1rem; color: #b34462; margin: 0;">
-                            🔍 <strong>подсказка</strong>
-                        </p>
-                        <p style="font-size: 1rem; color: #a5556b; margin: 10px 0 0 0;">
-                            что скрывает картина?
-                        </p>
-                    </div>
-                </div>
-                
-                <p id="error-message" style="color: #e74c3c; font-size: 0.8rem; display: none;">неверно, попробуй ещё</p>
+            <!-- Сообщение об успехе -->
+            <div id="successMessage" class="success-message" style="display: none;">
+                ✅ Видео сохраняется в папку "Загрузки"<br>
+                📱 На iPhone: открой и нажми "Сохранить в фото"
             </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
-</body>
+    <script>
+        const video = document.getElementById('myVideo');
+        const playBtn = document.getElementById('playBtn');
+        const downloadContainer = document.getElementById('downloadBtnContainer');
+        const successMessage = document.getElementById('successMessage');
+        const videoUrl = 'video/video.mp4';
 
+        // Кнопка Play
+        playBtn.addEventListener('click', () => {
+            video.play();
+            if (video.requestFullscreen) {
+                video.requestFullscreen();
+            }
+            playBtn.style.display = 'none';
+            
+            video.addEventListener('ended', showDownloadButton);
+            video.addEventListener('pause', function onPause() {
+                if (!video.paused) return;
+                if (document.fullscreenElement) return;
+                showDownloadButton();
+                video.removeEventListener('pause', onPause);
+            });
+        });
+
+        function showDownloadButton() {
+            downloadContainer.style.display = 'block';
+        }
+
+        // УНИВЕРСАЛЬНОЕ СОХРАНЕНИЕ - работает везде
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            // Создаем ссылку для скачивания
+            const link = document.createElement('a');
+            link.href = videoUrl;
+            link.download = 'dlya_nasti.mp4'; // имя файла при скачивании
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Показываем подсказку
+            successMessage.style.display = 'block';
+            
+            // Дополнительная инструкция для iPhone
+            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                successMessage.innerHTML = `
+                    ✅ Видео загружается...<br>
+                    📱 После загрузки открой файл и нажми<br>
+                    <strong>"Сохранить видео"</strong> в фотоплёнку
+                `;
+            }
+        });
+    </script>
+</body>
 </html>
