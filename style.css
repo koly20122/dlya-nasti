@@ -68,26 +68,32 @@ body {
 .password-inputs {
     display: flex;
     justify-content: center;
-    gap: 12px;
-    margin: 20px 0;
-    flex-wrap: wrap;
+    gap: 8px; /* чуть меньше расстояние */
+    margin: 15px 0;
+    flex-wrap: nowrap; /* запрещаем перенос */
+    width: 100%;
+    padding: 0 5px;
+    box-sizing: border-box;
 }
 
 .pass-input {
-    width: 60px;
-    height: 70px;
+    width: calc(25% - 8px); /* ровно четверть с учётом gap */
+    max-width: 70px; /* но не больше 70px */
+    min-width: 45px; /* и не меньше 45px */
+    height: 60px;
     text-align: center;
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 300;
     border: none;
     background: rgba(255, 240, 245, 0.8);
-    border-radius: 20px;
-    box-shadow: 0 5px 15px rgba(200, 120, 140, 0.2),
+    border-radius: 15px;
+    box-shadow: 0 3px 8px rgba(200, 120, 140, 0.2),
                 0 0 0 2px rgba(255, 255, 255, 0.7) inset;
     color: #b34462;
     caret-color: #d46b89;
     outline: none;
     transition: 0.2s;
+    box-sizing: border-box;
 }
 
 .pass-input:focus {
@@ -153,4 +159,23 @@ body {
 #error-message {
     margin-top: 10px;
     font-style: italic;
+
+}
+/* Запрещаем прокрутку всей страницы */
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+.container {
+    height: 100vh;
+    overflow-y: hidden;
+    touch-action: none; /* запрещает свайпы */
+}
+
+/* Сами модалки теперь будут прокручиваться внутри, если надо */
+.modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+    margin: 0 10px;
 }
