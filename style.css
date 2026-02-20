@@ -147,13 +147,34 @@ body {
 }
 
 /* Страница с видео */
+.video-wrapper .btn {
+    margin: 0 auto;
+    padding: 16px 35px;        /* чуть крупнее */
+    font-size: 1.2rem;
+    width: fit-content;
+    min-width: 200px;           /* минимальная ширина */
+}
+.video-wrapper video {
+    width: 100%;
+    height: auto;
+    max-height: 45vh;        /* видео займёт ~45% экрана */
+    min-height: 200px;        /* но не меньше 200px */
+    object-fit: contain;
+    border-radius: 20px;
+    margin-bottom: 5px;       /* маленький отступ снизу */
+}
 .video-page .video-wrapper {
     background: rgba(255, 240, 245, 0.6);
     backdrop-filter: blur(5px);
-    border-radius: 40px;
-    padding: 30px 20px;
+    border-radius: 30px;
+    padding: 15px 15px 15px 15px;
     box-shadow: 0 20px 40px rgba(255, 170, 190, 0.3);
     width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;                 /* минимальные отступы */
+    justify-content: center;
 }
 
 #error-message {
@@ -179,3 +200,4 @@ html, body {
     overflow-y: auto;
     margin: 0 10px;
 }
+
