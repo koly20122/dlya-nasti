@@ -112,7 +112,7 @@
             <!-- Сообщение об успехе -->
             <div id="successMessage" class="success-message" style="display: none;">
                 ✅ Скачивание началось...<br>
-                📱 После загрузки открой файл и сохрани в фото
+                📱 Открой папку "Загрузки" и сохрани в фото
             </div>
         </div>
     </div>
@@ -125,41 +125,51 @@
         
         const videoFileName = 'video.mp4';
 
-        // Функция для открытия полноэкранного режима (кросс-браузерная)
-        function openFullscreen(element) {
-            if (element.requestFullscreen) {
-                element.requestFullscreen();
-            } else if (element.mozRequestFullScreen) { // Firefox
-                element.mozRequestFullScreen();
-            } else if (element.webkitRequestFullscreen) { // Chrome, Safari, Opera
-                element.webkitRequestFullscreen();
-            } else if (element.msRequestFullscreen) { // IE/Edge
-                element.msRequestFullscreen();
-            } else {
-                // Если полноэкранный режим не поддерживается — хотя бы просто запускаем видео
-                console.log('Fullscreen API not supported');
-            }
-        }
+        // Определяем, iPhone ли это
+        const isIPhone = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
         // Кнопка Play
         playBtn.addEventListener('click', () => {
-            // Сначала запускаем видео
-            video.play().then(() => {
-                // А потом открываем на весь экран
-                openFullscreen(video);
-            }).catch(error => {
-                console.log('Автовоспроизведение заблокировано:', error);
-                // Если автовоспроизведение заблокировано — просто открываем fullscreen
-                openFullscreen(video);
-            });
-            
-            // Прячем кнопку play
+            // Прячем кнопку сразу
             playBtn.style.display = 'none';
+            
+            if (isIPhone) {
+                // СПЕЦИАЛЬНО ДЛЯ SAFARI НА IPHONE
+                
+                // Пытаемся войти в полноэкранный режим (webkitEnterFullscreen)
+                if (video.webkitEnterFullscreen) {
+                    video.webkitEnterFullscreen();
+                }
+                
+                // Запускаем видео с небольшой задержкой
+                setTimeout(() => {
+                    video.play().catch(error => {
+                        console.log('Ошибка воспроизведения:', error);
+                    });
+                }, 100);
+                
+            } else {
+                // Для остальных браузеров
+                video.play().then(() => {
+                    if (video.requestFullscreen) {
+                        video.requestFullscreen();
+                    }
+                }).catch(error => {
+                    console.log('Ошибка:', error);
+                });
+            }
         });
 
         // Отслеживаем окончание видео
         video.addEventListener('ended', () => {
             downloadContainer.style.display = 'block';
+        });
+
+        // Для iPhone: если вышли из fullscreen, но видео закончилось
+        video.addEventListener('webkitendfullscreen', () => {
+            if (video.ended) {
+                downloadContainer.style.display = 'block';
+            }
         });
 
         // Скачивание видео
@@ -175,7 +185,7 @@
             
             successMessage.style.display = 'block';
             
-            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            if (isIPhone) {
                 successMessage.innerHTML = `
                     ✅ Видео загружается...<br>
                     📱 Открой папку "Загрузки" и нажми<br>
