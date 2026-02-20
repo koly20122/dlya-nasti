@@ -1,0 +1,156 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+    background: linear-gradient(145deg, #fdeff2 0%, #f8e8ec 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 500px;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* Модальные окна */
+.modal {
+    position: absolute;
+    width: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 40px;
+    padding: 40px 30px;
+    box-shadow: 0 20px 50px rgba(255, 140, 170, 0.3),
+                0 0 0 2px rgba(255, 255, 255, 0.5) inset;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid rgba(255, 200, 220, 0.5);
+}
+
+.modal-content h2 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    color: #d44e6c;
+}
+
+.modal-content p {
+    font-size: 1.2rem;
+    color: #a5556b;
+    margin-bottom: 25px;
+}
+
+/* Поля ввода пароля (как в играх) */
+.password-inputs {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.pass-input {
+    width: 60px;
+    height: 70px;
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 300;
+    border: none;
+    background: rgba(255, 240, 245, 0.8);
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(200, 120, 140, 0.2),
+                0 0 0 2px rgba(255, 255, 255, 0.7) inset;
+    color: #b34462;
+    caret-color: #d46b89;
+    outline: none;
+    transition: 0.2s;
+}
+
+.pass-input:focus {
+    box-shadow: 0 5px 20px rgba(220, 100, 130, 0.4),
+                0 0 0 3px rgba(255, 200, 220, 0.8) inset;
+    transform: scale(1.02);
+}
+
+/* Кнопки */
+.btn {
+    background: #ffb6c1;
+    border: none;
+    color: #5e3a44;
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding: 16px 40px;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 5px 0 #d48b9b,
+                0 10px 25px rgba(255, 150, 180, 0.4);
+    transition: 0.1s ease;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    letter-spacing: 1px;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.btn.secondary {
+    background: #ffe2e9;
+    box-shadow: 0 3px 0 #d4a2b0;
+    color: #754956;
+    font-size: 1rem;
+    padding: 12px 30px;
+}
+
+.btn:hover {
+    transform: translateY(2px);
+    box-shadow: 0 3px 0 #d48b9b,
+                0 8px 20px rgba(255, 150, 180, 0.4);
+}
+
+.btn.secondary:hover {
+    transform: translateY(1px);
+    box-shadow: 0 2px 0 #d4a2b0;
+}
+
+.btn:active {
+    transform: translateY(5px);
+    box-shadow: 0 0px 0 #d48b9b,
+                0 8px 20px rgba(255, 150, 180, 0.4);
+}
+
+/* Страница с видео */
+.video-page .video-wrapper {
+    background: rgba(255, 240, 245, 0.6);
+    backdrop-filter: blur(5px);
+    border-radius: 40px;
+    padding: 30px 20px;
+    box-shadow: 0 20px 40px rgba(255, 170, 190, 0.3);
+    width: 100%;
+}
+
+#error-message {
+    margin-top: 10px;
+    font-style: italic;
+}

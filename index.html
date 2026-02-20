@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Для Насти 💐</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Первое модальное окно -->
+        <div id="modal1" class="modal active">
+            <div class="modal-content">
+                <h2>🌷</h2>
+                <p>тут кое что для тебя</p>
+                <button class="btn" onclick="showPasswordModal()">Ок</button>
+            </div>
+        </div>
+
+        <!-- Второе модальное окно (пароль) -->
+        <div id="modal2" class="modal">
+            <div class="modal-content">
+                <h2>💌</h2>
+                <p>введи пароль</p>
+                <p style="font-size: 0.9rem; color: #888; margin-top: -10px;">4 символа</p>
+                <div class="password-inputs">
+                    <input type="text" maxlength="1" class="pass-input" id="pass1" onkeyup="moveToNext(this, 'pass2')">
+                    <input type="text" maxlength="1" class="pass-input" id="pass2" onkeyup="moveToNext(this, 'pass3')">
+                    <input type="text" maxlength="1" class="pass-input" id="pass3" onkeyup="moveToNext(this, 'pass4')">
+                    <input type="text" maxlength="1" class="pass-input" id="pass4" onkeyup="checkPassword()">
+                </div>
+                
+                <!-- Здесь будет появляться подсказка -->
+                <div id="hint" style="margin-top: 20px; display: none;">
+                    <div style="background: rgba(255, 200, 220, 0.3); border-radius: 30px; padding: 15px; border: 2px dashed #ffb6c1;">
+                        <p style="font-size: 1.1rem; color: #b34462; margin: 0;">
+                            🔍 <strong>подсказка</strong>
+                        </p>
+                        <p style="font-size: 1rem; color: #a5556b; margin: 10px 0 0 0;">
+                            что скрывает картина?
+                        </p>
+                    </div>
+                </div>
+                
+                <p id="error-message" style="color: #e74c3c; font-size: 0.8rem; display: none;">неверно, попробуй ещё</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
