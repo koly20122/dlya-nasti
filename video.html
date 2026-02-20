@@ -1,114 +1,30 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Для Насти 💐</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="container video-page">
-        <div class="video-wrapper">
-            <video id="myVideo" width="100%" controls style="border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
-                <source src="video.mp4" type="video/mp4">
-                Твой браузер не поддерживает видео.
-            </video>
-            
-            <div style="margin-top: 30px; text-align: center;">
-                <button class="btn" id="playBtn">▶ play me</button>
-            </div>
-            
-            <div id="downloadBtnContainer" style="margin-top: 20px; text-align: center; display: none;">
-                <button class="btn secondary" id="downloadBtn">💾 Запомнить момент</button>
-            </div>
-        </div>
-    </div>
+<script>
+    const video = document.getElementById('myVideo');
+    const playBtn = document.getElementById('playBtn');
+    const downloadContainer = document.getElementById('downloadBtnContainer');
+    const videoUrl = 'video/video.mp4';
 
-    <script>
-        const video = document.getElementById('myVideo');
-        const playBtn = document.getElementById('playBtn');
-        const downloadContainer = document.getElementById('downloadBtnContainer');
-        const videoUrl = 'video/video.mp4'; // путь к видео
-
-        playBtn.addEventListener('click', () => {
-            video.play();
-            video.requestFullscreen?.();
-            playBtn.style.display = 'none';
-            
-            // Показываем кнопку сохранения после окончания видео
-            video.addEventListener('ended', showDownloadButton);
-            
-            // Также показываем, если пользователь выйдет из полноэкранного режима
-            video.addEventListener('pause', function onPause() {
-                if (!video.paused) return;
-                if (document.fullscreenElement) return;
-                showDownloadButton();
-                video.removeEventListener('pause', onPause);
-            });
+    playBtn.addEventListener('click', () => {
+        video.play();
+        video.requestFullscreen?.();
+        playBtn.style.display = 'none';
+        
+        video.addEventListener('ended', showDownloadButton);
+        video.addEventListener('pause', function onPause() {
+            if (!video.paused) return;
+            if (document.fullscreenElement) return;
+            showDownloadButton();
+            video.removeEventListener('pause', onPause);
         });
+    });
 
-        function showDownloadButton() {
-            downloadContainer.style.display = 'block';
-        }
+    function showDownloadButton() {
+        downloadContainer.style.display = 'block';
+    }
 
-        // Функция для сохранения видео в фотоплёнку (для iPhone)
-        async function saveToPhotos(videoUrl) {
-            try {
-                // Скачиваем видео как blob
-                const response = await fetch(videoUrl);
-                const blob = await response.blob();
-                
-                // Создаём файл для шаринга
-                const file = new File([blob], 'dlya_nasti.mp4', { type: 'video/mp4' });
-                
-                // Проверяем, можно ли поделиться файлом
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    // Открываем нативное меню "Поделиться"
-                    await navigator.share({
-                        files: [file],
-                        title: 'Для Насти',
-                        text: 'Видео с 8 марта 💐'
-                    });
-                } else {
-                    // Если Web Share не работает, используем обычное скачивание
-                    fallbackDownload(videoUrl);
-                }
-            } catch (error) {
-                console.log('Web Share не сработал, используем обычное скачивание');
-                fallbackDownload(videoUrl);
-            }
-        }
-
-        // Обычное скачивание (на Android или если что-то пошло не так)
-        function fallbackDownload(videoUrl) {
-            const a = document.createElement('a');
-            a.href = videoUrl;
-            a.download = 'dlya_nasti.mp4';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            
-            // Подсказка для iPhone
-            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                alert('Нажми и удерживай на видео, выбери "Сохранить видео"');
-            }
-        }
-
-        // Определяем, iPhone ли это
-        function isIphone() {
-            return /iPhone|iPad|iPod/i.test(navigator.userAgent);
-        }
-
-        // Обработчик кнопки "Запомнить момент"
-        document.getElementById('downloadBtn').addEventListener('click', () => {
-            if (isIphone()) {
-                // На iPhone пытаемся сохранить в фото через Share
-                saveToPhotos(videoUrl);
-            } else {
-                // На Android просто скачиваем
-                fallbackDownload(videoUrl);
-            }
-        });
-    </script>
-</body>
-</html>
+    // ПРОСТАЯ ИНСТРУКЦИЯ для Насти
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+        // Просто показываем подсказку
+        alert('📱 Чтобы сохранить видео:\n\n1. Нажми и удерживай на видео пальцем\n2. Выбери "Сохранить видео"');
+    });
+</script>
