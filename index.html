@@ -24,10 +24,10 @@
                 <p>введи пароль</p>
                 <p style="font-size: 0.9rem; color: #888; margin-top: -10px;">4 символа</p>
                 <div class="password-inputs">
-                    <input type="text" maxlength="1" class="pass-input" id="pass1" onkeyup="moveToNext(this, 'pass2')">
-                    <input type="text" maxlength="1" class="pass-input" id="pass2" onkeyup="moveToNext(this, 'pass3')">
-                    <input type="text" maxlength="1" class="pass-input" id="pass3" onkeyup="moveToNext(this, 'pass4')">
-                    <input type="text" maxlength="1" class="pass-input" id="pass4" onkeyup="checkPassword()">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pass-input" id="pass1" onkeyup="moveToNext(this, 'pass2')">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pass-input" id="pass2" onkeyup="moveToNext(this, 'pass3')">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pass-input" id="pass3" onkeyup="moveToNext(this, 'pass4')">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pass-input" id="pass4" onkeyup="checkPassword()">
                 </div>
                 
                 <!-- Здесь будет появляться подсказка -->
@@ -49,4 +49,5 @@
 
     <script src="script.js"></script>
 </body>
+
 </html>
