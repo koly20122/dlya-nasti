@@ -1,30 +1,200 @@
-<script>
-    const video = document.getElementById('myVideo');
-    const playBtn = document.getElementById('playBtn');
-    const downloadContainer = document.getElementById('downloadBtnContainer');
-    const videoUrl = 'video/video.mp4';
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Для Насти 💐</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Дополнительные стили для кнопки и видео */
+        .video-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            margin: 0;
+            background: linear-gradient(145deg, #fdeff2 0%, #f8e8ec 100%);
+        }
 
-    playBtn.addEventListener('click', () => {
-        video.play();
-        video.requestFullscreen?.();
-        playBtn.style.display = 'none';
-        
-        video.addEventListener('ended', showDownloadButton);
-        video.addEventListener('pause', function onPause() {
-            if (!video.paused) return;
-            if (document.fullscreenElement) return;
-            showDownloadButton();
-            video.removeEventListener('pause', onPause);
+        .video-wrapper {
+            background: rgba(255, 240, 245, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 15px;
+            box-shadow: 0 20px 40px rgba(255, 170, 190, 0.4);
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border: 2px solid rgba(255, 200, 220, 0.5);
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            height: auto;
+            max-height: 45vh;
+            min-height: 200px;
+            object-fit: contain;
+            border-radius: 20px;
+            background: #000;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .btn {
+            background: #ffb6c1;
+            border: none;
+            color: #5e3a44;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 16px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #d48b9b, 0 10px 25px rgba(255, 150, 180, 0.4);
+            transition: 0.1s ease;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            letter-spacing: 1px;
+            width: fit-content;
+            margin: 0 auto;
+            min-width: 200px;
+        }
+
+        .btn.secondary {
+            background: #ffe2e9;
+            box-shadow: 0 3px 0 #d4a2b0;
+            color: #754956;
+            font-size: 1rem;
+            padding: 12px 25px;
+            min-width: 180px;
+        }
+
+        .btn:hover {
+            transform: translateY(2px);
+            box-shadow: 0 3px 0 #d48b9b, 0 8px 20px rgba(255, 150, 180, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 0px 0 #d48b9b, 0 8px 20px rgba(255, 150, 180, 0.4);
+        }
+
+        #downloadBtnContainer {
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        /* Подсказка для сохранения */
+        .hint-box {
+            background: rgba(255, 220, 230, 0.5);
+            border-radius: 20px;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px dashed #ff8da1;
+            font-size: 0.9rem;
+            color: #a5556b;
+            text-align: center;
+        }
+
+        .hint-box p {
+            margin: 5px 0;
+        }
+
+        .hint-box .arrow {
+            font-size: 1.5rem;
+            color: #ff6b8b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container video-page">
+        <div class="video-wrapper">
+            <!-- Видео -->
+            <video id="myVideo" controls playsinline webkit-playsinline>
+                <source src="video/video.mp4" type="video/mp4">
+                Твой браузер не поддерживает видео.
+            </video>
+            
+            <!-- Кнопка Play -->
+            <div style="text-align: center;">
+                <button class="btn" id="playBtn">▶ Включи меня</button>
+            </div>
+            
+            <!-- Кнопка "Запомнить момент" (появляется после видео) -->
+            <div id="downloadBtnContainer" style="display: none; text-align: center;">
+                <button class="btn secondary" id="downloadBtn">💾 Сохранить момент</button>
+            </div>
+
+            <!-- Подсказка (появляется после нажатия на кнопку) -->
+            <div id="hintBox" class="hint-box" style="display: none;">
+                <p class="arrow">👇</p>
+                <p><strong>Как сохранить видео:</strong></p>
+                <p>1️⃣ Нажми и удерживай палец на видео</p>
+                <p>2️⃣ Выбери <strong>"Сохранить видео"</strong></p>
+                <p>3️⃣ Готово! Видео будет в фотоплёнке 📸</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('myVideo');
+        const playBtn = document.getElementById('playBtn');
+        const downloadContainer = document.getElementById('downloadBtnContainer');
+        const hintBox = document.getElementById('hintBox');
+
+        // Кнопка Play
+        playBtn.addEventListener('click', () => {
+            video.play();
+            // Пытаемся открыть на весь экран
+            if (video.requestFullscreen) {
+                video.requestFullscreen();
+            }
+            playBtn.style.display = 'none';
+            
+            // Показываем кнопку сохранения после окончания видео
+            video.addEventListener('ended', showDownloadButton);
+            
+            // И после выхода из полноэкранного режима
+            video.addEventListener('pause', function onPause() {
+                if (!video.paused) return;
+                if (document.fullscreenElement) return;
+                showDownloadButton();
+                video.removeEventListener('pause', onPause);
+            });
         });
-    });
 
-    function showDownloadButton() {
-        downloadContainer.style.display = 'block';
-    }
+        // Показываем кнопку "Запомнить момент"
+        function showDownloadButton() {
+            downloadContainer.style.display = 'block';
+        }
 
-    // ПРОСТАЯ ИНСТРУКЦИЯ для Насти
-    document.getElementById('downloadBtn').addEventListener('click', () => {
-        // Просто показываем подсказку
-        alert('📱 Чтобы сохранить видео:\n\n1. Нажми и удерживай на видео пальцем\n2. Выбери "Сохранить видео"');
-    });
-</script>
+        // Кнопка "Запомнить момент" — показывает подсказку
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            // Показываем подсказку
+            hintBox.style.display = 'block';
+            
+            // Плавно скроллим к подсказке
+            hintBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Дополнительная информация для разных устройств
+            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                // Для iPhone ничего не делаем, подсказка уже есть
+            } else {
+                // Для Android просто показываем другой текст
+                hintBox.innerHTML = `
+                    <p class="arrow">👇</p>
+                    <p><strong>Как сохранить видео:</strong></p>
+                    <p>1️⃣ Нажми на три точки в плеере</p>
+                    <p>2️⃣ Выбери "Скачать"</p>
+                    <p>или нажми и удерживай на видео</p>
+                `;
+            }
+        });
+
+        // Если видео уже закончилось, а кнопка не появилась
+        video.addEventListener('ended', () => {
+            showDownloadButton();
+        });
+    </script>
+</body>
+</html>
